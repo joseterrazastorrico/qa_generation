@@ -16,7 +16,6 @@ from agents.qa_eval_context.qa_eval_context import QAContextEval
 from dotenv import load_dotenv
 load_dotenv()
 
-
 def get_vectorestore(pdf_docs, model_name="sentence-transformers/all-MiniLM-L6-v2", store_name='test_vectorstore', save=True):
     embeddings = HuggingFaceEmbeddings(model_name=model_name)
     vectorstore = Vectorstore(embeddings=embeddings, save=save)
