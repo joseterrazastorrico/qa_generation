@@ -16,8 +16,12 @@ from agents.qa_eval_context.qa_eval_context import QAContextEval
 from dotenv import load_dotenv
 load_dotenv()
 
-def get_vectorestore(pdf_docs, model_name="sentence-transformers/all-MiniLM-L6-v2", store_name='test_vectorstore', save=True):
-    embeddings = HuggingFaceEmbeddings(model_name=model_name)
+model_kwargs = {'device': 'cpu'}
+encode_kwargs = {'normalize_embeddings': False}
+def get_vectorestore(pdf_docs, model_name="sentence-transformers/all-MiniLM-L6-v2", store_name='test_vectorstore', save=False):
+    embeddings = HuggingFaceEmbeddings(model_name=model_name,
+                                        model_kwargs=model_kwargs,
+                                        encode_kwargs=encode_kwargs)
     vectorstore = Vectorstore(embeddings=embeddings, save=save)
     vecs = vectorstore.generate_vectorstore(pdf_docs, store_name, chunk_size=2500, chunk_overlap=300)
     return vecs
@@ -56,7 +60,7 @@ def get_grad(text):
 def processing_question(questions):
     vecs = get_vectorestore(pdf_docs=['./Documents/Analisis-COP3-Escazu_ONG-CEUS-Chile.pdf'],
                             model_name="sentence-transformers/all-MiniLM-L6-v2",
-                            store_name='test_vectorstore', save=True)
+                            store_name='test_vectorstore', save=False)
     input_text_questions = 'acuerdos realizados'
     qa_generated = get_questions(vecs, input_text_questions=input_text_questions, k=questions)
     return qa_generated
